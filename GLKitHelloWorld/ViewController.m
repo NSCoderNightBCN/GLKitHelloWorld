@@ -29,8 +29,9 @@ enum
 
 GLfloat gCubeVertexData[216] = 
 {
-  // Data layout for each line below is:
+  // La disposicion de los datos es:
   // positionX, positionY, positionZ,     normalX, normalY, normalZ,
+  // son 6 caras y cada cara esta formada por dos triangulos (tres vertices por cada triangulo * 2 triangulos por cara = 6 vertices por cara)
   0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
   0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
   0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
@@ -100,6 +101,8 @@ GLfloat gCubeVertexData[216] =
   // asignamos el contexto a nuestra vista
   GLKView *view = (GLKView *)self.view;
   view.context = self.context;
+  
+  //vamos a usar el "depth buffer" para manejar prfundidad
   view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
   
   [self setupGL];
@@ -138,26 +141,68 @@ GLfloat gCubeVertexData[216] =
   
   // creamos el efecto
   self.effect = [[[GLKBaseEffect alloc] init] autorelease];
+  //activamos una luz en el efecto (roja)
   self.effect.light0.enabled = GL_TRUE;
   self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
   
-  //activamos el stencil
+  //activamos el estado para manejar profundidad
   glEnable(GL_DEPTH_TEST);
   
-  //creamos la geometria
-  glGenVertexArraysOES(1, &_vertexArray);
-  glBindVertexArrayOES(_vertexArray);
+  // Open GL admite "extensiones": funcionalidad que no necesariamente esta implementada por todos los vendors
+  // Es posible preguntarle a Open GL cuales son las extensiones disponibles
+  // Las extensiones en general pueden ser invocadas a traves de APIs con sufijos
+  // AGL = Apple, OES = Khronos Group, etc
   
+  //CREAMOS LA GEOMETRIA
+  
+  // Existen varias tecnicas para cargar geometrias
+  // Los principales atributos que podemos considerar para cada vertice son: 
+  //  - posicion (xyz)
+  //  - coordenadas de la textura (st)
+  //  - color (rgba)
+  //  - normal (ijk)
+  // en nuestro ejemplo pasaremos la posicion y la normal, ya que no usaremos texturas y el color estara dado por la luz
+  
+  // Open GL admite que los atributos sean pasados como "struct of arrays" o como "array of structs"
+  // struct of arrays [POS1, POS2, POS3] [NOR1, NOR2, NOR3]
+  // array of structs [POS1, NOR1, POS2, NOR2, POS3, NOR3] <- en general es mas eficiente
+  
+  // Es posible copiar los datos de los vertices antes de cada llamada, pero eso es ineficiente
+  // Conviene generar un "VBO" o Vertex Buffer Object para que Open GL maneje los datos, tambien teniendo en cuenta 
+  //   una "pista" que proveemos para decir cuanto varia nuestra geometria en el tiempo, en este caso GL_STATIC_DRAW = no cambia
+  // Estas tres llamadas generan, asignan y llenan un buffer con nuestra geometria
   glGenBuffers(1, &_vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
+
   
+  // Ahora bien, cuando dibujemos nuestra geometria deberemos pasar los atributos de los vertices a nuestro programa
+  // eso implica que para cada tipo de atributo deberemos llamar una secuencia de tipo
+  // enlazarBuffer -> apuntarElBufferALosDatos -> encenderElEstadoDeEsteAtributo
+  // o mejor... glBindBuffer -> glVertexAttribPointer -> glEnableVertexAttribArray
+  // en nuestro caso hay que hacer esas tres llamadas para las posiciones y las normales
+  // ¡Pero las llamadas son siempre las mismas!
+  
+  // Para mejorar la eficiencia de este aspecto existe una extension llamada OES_vertex_array_object
+  // o "VAO" en la jerga
+  // Lo que vamos a hacer en las siguientes lineas es generar un VAO, enlazarlo de modo que las llamadas
+  // subsiguientes hagan referencia al mismo, encenderemos cada uno de los estados de nuestros atributos
+  // y apuntaremos las posiciones del VAO al VBO con sus respectivos offsets y strides
+  
+  glGenVertexArraysOES(1, &_vertexArray);
+  glBindVertexArrayOES(_vertexArray);
+
   glEnableVertexAttribArray(GLKVertexAttribPosition);
   glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
   glEnableVertexAttribArray(GLKVertexAttribNormal);
   glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
   
+  // desenlazamos el VAO
   glBindVertexArrayOES(0);
+
+  // desenlazamos el VBO -> esto no viene en el template, pero es buena costumbre
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 - (void)tearDownGL
@@ -269,40 +314,43 @@ GLfloat gCubeVertexData[216] =
 
 #pragma mark -  OpenGL ES 2 shader compilation
 
+//carga los shaders desde dos archivos
 - (BOOL)loadShaders
 {
+  //"handles" para el vertex shader y el fragment shader
   GLuint vertShader, fragShader;
+  //path de los archivos que contienen los shaders
   NSString *vertShaderPathname, *fragShaderPathname;
   
-  // Create shader program.
+  // Crea el programa
   _program = glCreateProgram();
   
-  // Create and compile vertex shader.
+  // lee, crea y compila el vertex shader, devuelve el handle por parametro
   vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
   if (![self compileShader:&vertShader type:GL_VERTEX_SHADER file:vertShaderPathname]) {
     NSLog(@"Failed to compile vertex shader");
     return NO;
   }
   
-  // Create and compile fragment shader.
+  // lee, crea y compila el fragment shader, devuelve el handle por parametro
   fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
   if (![self compileShader:&fragShader type:GL_FRAGMENT_SHADER file:fragShaderPathname]) {
     NSLog(@"Failed to compile fragment shader");
     return NO;
   }
   
-  // Attach vertex shader to program.
+  // Vincula el vertex shader con el programa
   glAttachShader(_program, vertShader);
   
-  // Attach fragment shader to program.
+  // Vincula el fragment shader con el programa
   glAttachShader(_program, fragShader);
   
-  // Bind attribute locations.
-  // This needs to be done prior to linking.
+  // Asigna las posiciones en las que seran pasados los parametros (atributos) al programa
+  // Esto debe hacerse antes de enlazar (link) el programa
   glBindAttribLocation(_program, ATTRIB_VERTEX, "position");
   glBindAttribLocation(_program, ATTRIB_NORMAL, "normal");
   
-  // Link program.
+  // Enlaza rl programa (link)
   if (![self linkProgram:_program]) {
     NSLog(@"Failed to link program: %d", _program);
     
@@ -322,11 +370,11 @@ GLfloat gCubeVertexData[216] =
     return NO;
   }
   
-  // Get uniform locations.
+  // Obtiene las direcciones de los parametros "uniform"
   uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(_program, "modelViewProjectionMatrix");
   uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(_program, "normalMatrix");
   
-  // Release vertex and fragment shaders.
+  // Descarta los shaders (ya no hacen falta porque estan enlazados en el programa)
   if (vertShader) {
     glDetachShader(_program, vertShader);
     glDeleteShader(vertShader);

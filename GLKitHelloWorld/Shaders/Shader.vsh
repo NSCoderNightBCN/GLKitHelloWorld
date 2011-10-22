@@ -35,7 +35,7 @@ void main()
   // definimos las coordenadas de una luz
   vec3 lightPosition = vec3(0.0, 0.0, 1.0);
   
-  // definimos el color de la luz
+  // definimos el color de la luz (azul)
   vec4 diffuseColor = vec4(0.4, 0.4, 1.0, 1.0);
   
   // multiplicamos (dot = producto interno) la direccion en la que mirammos

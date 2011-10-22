@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
+
+// Se dibujan dos cubos que rotan alrededor del eje Y y que a su vez rotan sobre todos sus propios ejes
+// Uno de los cubos (el rojo) se dibuja usando las APIs GLKit, el otro (azul) se dibuja usando las APIs Open GL
+
 @interface ViewController : GLKViewController {
   // el identificador del programa formado por los shaders
   GLuint _program;
@@ -38,7 +42,7 @@
 // "activa" el contexto Open GL
 // carga, compila y enalaza los shaders
 // configura el "effect"
-// activa el estado GL_DEPTH_TEST (stencil buffer, mascara)
+// activa el estado de control de profundidad (GL_DEPTH_TEST)
 // carga la geometria
 - (void)setupGL;
 
