@@ -64,7 +64,9 @@
 				8AD3F1971450956D004B4E84 /* Frameworks */,
 				8AD3F1951450956D004B4E84 /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		8AD3F1951450956D004B4E84 /* Products */ = {
 			isa = PBXGroup;
@@ -292,6 +294,7 @@
 				8AD3F1BC1450956D004B4E84 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
