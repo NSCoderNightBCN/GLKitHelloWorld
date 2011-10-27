@@ -22,7 +22,6 @@
   GLuint _vertexArray;
   // identificador del VBO
   GLuint _vertexBuffer;
-
 }
 
 // contexto EAGL
@@ -44,7 +43,9 @@
 // borra el "effect"
 - (void)tearDownGL;
 
-- (IBAction)changeTexture:(id)sender;
+- (IBAction)enableGCD:(id)sender;
 
 @property (retain, nonatomic) IBOutlet UILabel *frameRateLabel;
+@property (retain, nonatomic) IBOutlet UIButton *enableGCDButton;
+
 @end

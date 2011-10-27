@@ -78,15 +78,21 @@ GLfloat gCubeVertexData[288] =
 @interface ViewController ()
 @property (nonatomic, retain) GLKTextureInfo *texture;
 @property (atomic, assign) BOOL loadingTexture;
+@property (assign, nonatomic) BOOL gcdEnabled;
+
+- (void)switchTextures;
+
 @end
 
 @implementation ViewController
-@synthesize frameRateLabel = _frameRateLabel;
 
+@synthesize frameRateLabel = _frameRateLabel;
+@synthesize enableGCDButton = _enableGCDButton;
 @synthesize context = _context;
 @synthesize effect = _effect;
 @synthesize texture;
 @synthesize loadingTexture;
+@synthesize gcdEnabled = _gcdEnabled;
 
 - (void)dealloc
 {
@@ -94,6 +100,7 @@ GLfloat gCubeVertexData[288] =
   [_context release];
   [_effect release];
   [_frameRateLabel release];
+  [_enableGCDButton release];
   [super dealloc];
 }
 
@@ -101,6 +108,7 @@ GLfloat gCubeVertexData[288] =
 {
   [super viewDidLoad];
   
+  self.gcdEnabled = NO;
   self.preferredFramesPerSecond = 60;
   
   // creamos el contexto EAGL
@@ -119,12 +127,16 @@ GLfloat gCubeVertexData[288] =
   
   [self setupGL];
   
-  [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(changeTexture:) userInfo:nil repeats:YES];
+  [NSTimer scheduledTimerWithTimeInterval:3 target:self 
+                                 selector:@selector(switchTextures) 
+                                 userInfo:nil 
+                                  repeats:YES];
 }
 
 - (void)viewDidUnload
 {    
   [self setFrameRateLabel:nil];
+  [self setEnableGCDButton:nil];
   [super viewDidUnload];
   
   [self tearDownGL];
@@ -243,21 +255,39 @@ GLfloat gCubeVertexData[288] =
   self.effect = nil;
 }
 
-- (IBAction)changeTexture:(id)sender {
-  NSLog(@"change");
+- (IBAction)enableGCD:(id)sender
+{
+  NSString *buttonTitle;
   
+  // Cambiamos el flag que activa/desactiva las funciones de GCD
+  self.gcdEnabled = !self.gcdEnabled;
+  
+  // Actualizamos el título del botón
+  buttonTitle = (self.gcdEnabled) ? @"Desactivar GCD" : @"Activar GCD";
+  [self.enableGCDButton setTitle:buttonTitle forState:UIControlStateNormal];
+  [self.enableGCDButton sizeToFit];
+}
+
+- (IBAction)switchTextures
+{
+  NSLog(@"changeTexture:");
+  
+  // Si aún se está ejecutando una operación de carga de texturas, abandonamos
   if (self.loadingTexture) {
     return;
   }
-  self.loadingTexture = YES; 
+  self.loadingTexture = YES;
   
-#define USE_GCD 1
   
-#if USE_GCD  
-  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-  dispatch_async(queue, ^{
-    [EAGLContext setCurrentContext:self.context];
-#endif
+  void (^loadTextureBlock)(void);
+  
+  // ATENCIÓN! Aquí sólo definimos el bloque, no lo ejecutamos!
+  loadTextureBlock = ^{
+    
+    // Si ejecutamos este bloque con GCD, necesitamos activar el contexto de 
+    // OpenGL.
+    if (self.gcdEnabled)
+      [EAGLContext setCurrentContext:self.context];
     
     NSError *error;
     self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex3.png" ofType:nil] 
@@ -267,22 +297,43 @@ GLfloat gCubeVertexData[288] =
       NSLog(@"error loading texture: %@", [error description]);
     }
     
-    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    void (^assignTextureBlock)(void);
     
-    dispatch_async(mainQueue, ^{
-      [EAGLContext setCurrentContext:self.context];
+    // Recordamos que aquí sólo definimos el boque, se ejecuta más abajo
+    assignTextureBlock = ^{
+
+      // Otra vez, si ejecutamos esto desde GCD tenemos que activar el contexto
+      if (self.gcdEnabled)
+        [EAGLContext setCurrentContext:self.context];
+      
+      // Eliminamos la textura actual
       GLuint tex = self.effect.texture2d0.name;
       glDeleteTextures(1, &tex);
       
+      // Assignamos la nueva textura
       self.effect.texture2d0.name = self.texture.name;
+      
+      // Hemos terminado de cargar la textura, volvemos a permitir más cambios
       self.loadingTexture = NO; 
-    });
+    };
     
-#if USE_GCD  
- });
-#endif
+    // Aquí sí lo ejecutamos
+    if (self.gcdEnabled)
+    {
+      dispatch_queue_t mainQueue = dispatch_get_main_queue();
+      dispatch_async(mainQueue, assignTextureBlock);
+    }
+    else
+      assignTextureBlock();
+  };
   
- 
+  if (self.gcdEnabled)
+  {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, loadTextureBlock);
+  }
+  else
+    loadTextureBlock();
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods
