@@ -32,45 +32,45 @@ GLfloat gCubeVertexData[288] =
   // La disposicion de los datos es:
   // positionX, positionY, positionZ,     normalX, normalY, normalZ,
   // son 6 caras y cada cara esta formada por dos triangulos (tres vertices por cada triangulo * 2 triangulos por cara = 6 vertices por cara)
-  0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,      0.0f, 1.0f,
+  0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,      1.0f, 0.0f,
   0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
   0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
   0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,          1.0f, 0.0f, 0.0f,      1.0f, 0.0f,
+  0.5f, 0.5f, 0.5f,          1.0f, 0.0f, 0.0f,      0.0f, 1.0f,
   0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
   
-  0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,      0.0f, 1.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,      1.0f, 1.0f,
-  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,      0.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,      0.0f, 0.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,      1.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,      1.0f, 1.0f,
+  0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,      1.0f, 1.0f,
+  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,      0.0f, 1.0f,
+  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,      1.0f, 0.0f,
+  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,      1.0f, 0.0f,
+  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,      0.0f, 1.0f,
+  -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,      0.0f, 0.0f,
   
-  -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,      0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
-  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,      1.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
+  -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,      1.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
+  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
+  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
+  -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,      0.0f, 1.0f,
   
-  -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,      0.0f, 1.0f,
-  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,      1.0f, 1.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,      0.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,      0.0f, 0.0f,
-  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,      1.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,      1.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,      1.0f, 1.0f,
+  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,      0.0f, 1.0f,
+  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,      1.0f, 0.0f,
+  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,      1.0f, 0.0f,
+  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,      0.0f, 1.0f,
+  0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,      0.0f, 0.0f,
   
-  0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,      0.0f, 1.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      1.0f, 1.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      0.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      0.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      1.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,      1.0f, 1.0f,
+  0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,      1.0f, 1.0f,
+  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      0.0f, 1.0f,
+  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      1.0f, 0.0f,
+  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      1.0f, 0.0f,
+  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      0.0f, 1.0f,
+  -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,      0.0f, 0.0f,
   
-  0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,      0.0f, 1.0f,
-  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,      1.0f, 1.0f,
-  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,      0.0f, 0.0f,
-  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,      0.0f, 0.0f,
+  0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,      0.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,      1.0f, 0.0f,
+  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,      0.0f, 1.0f,
+  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,      0.0f, 1.0f,
   -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,      1.0f, 0.0f,
   -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f,      1.0f, 1.0f
 };
@@ -209,7 +209,7 @@ GLfloat gCubeVertexData[288] =
   
   NSError *error;
   GLKTextureInfo *texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex.png" ofType:nil] 
-                                                                options:NULL 
+                                                                options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:GLKTextureLoaderOriginBottomLeft] 
                                                                   error:&error];
   if (!texture) {
     NSLog(@"error loading texture: %@", [error description]);
