@@ -13,16 +13,8 @@
 // Se dibujan dos cubos que rotan alrededor del eje Y y que a su vez rotan sobre todos sus propios ejes
 // Uno de los cubos (el rojo) se dibuja usando las APIs GLKit, el otro (azul) se dibuja usando las APIs Open GL
 
-@interface ViewController : GLKViewController {
-  // el identificador del programa formado por los shaders
-  GLuint _program;
-  
-  // matriz de 4x4 que representa la transformacion del mundo y la camara
-  GLKMatrix4 _modelViewProjectionMatrix;
-  
-  // matriz de 3x3 que representa las normales de las caras de los objetos
-  GLKMatrix3 _normalMatrix;
-  
+@interface ViewController : GLKViewController
+{
   // este parametro variara con cada ciclo
   float _rotation;
   
@@ -51,13 +43,5 @@
 // borra la geometria
 // borra el "effect"
 - (void)tearDownGL;
-
-// metodos para
-// cargar, compilar, enalazar y validar los shaders
-- (BOOL)loadShaders;
-- (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file;
-- (BOOL)linkProgram:(GLuint)prog;
-- (BOOL)validateProgram:(GLuint)prog;
-
 
 @end

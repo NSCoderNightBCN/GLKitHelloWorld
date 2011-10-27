@@ -109,7 +109,7 @@ GLfloat gCubeVertexData[216] =
 }
 
 - (void)viewDidUnload
-{    
+{
   [super viewDidUnload];
   
   [self tearDownGL];
@@ -135,9 +135,6 @@ GLfloat gCubeVertexData[216] =
 {
   //activamos el contexto
   [EAGLContext setCurrentContext:self.context];
-  
-  // carga, compila y enalaza los shaders
-  [self loadShaders];
   
   // creamos el efecto
   self.effect = [[[GLKBaseEffect alloc] init] autorelease];
@@ -216,12 +213,6 @@ GLfloat gCubeVertexData[216] =
   
   //borramos el efecto
   self.effect = nil;
-  
-  //borramos el programa
-  if (_program) {
-    glDeleteProgram(_program);
-    _program = 0;
-  }
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods
@@ -232,9 +223,6 @@ GLfloat gCubeVertexData[216] =
   // en nuestro caso se trata de calcular las transformaciones a la geometria
   // (girar)
   
-  // debemos actualizar dos calculos separados
-  // uno para cada cubo (uno para el efecto y otro para el programa)
-  
   //calculos comunes
   
   //aspect ratio de la vista
@@ -244,12 +232,8 @@ GLfloat gCubeVertexData[216] =
   GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
 
   // aleja los objetos
-  GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -4.0f);
-  // rota los objetos alrededor del centro de la escena sobre el eje Y
-  baseModelViewMatrix = GLKMatrix4Rotate(baseModelViewMatrix, _rotation, 0.0f, 1.0f, 0.0f);
+  GLKMatrix4 baseModelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, -1.0f);
   
-  //EMPEZAMOS CON EL CUBO DEL EFECTO
-
   // asignamos la matriz de la camara
   self.effect.transform.projectionMatrix = projectionMatrix;
   
@@ -261,22 +245,7 @@ GLfloat gCubeVertexData[216] =
   modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
   
   self.effect.transform.modelviewMatrix = modelViewMatrix;
-  
-  //SEGUIMOS CON EL CUBO DEL PROGRAMA
-  
-  // acerca un poco mas el cubo
-  modelViewMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 1.5f);
-  // rota sobre todos los ejes
-  modelViewMatrix = GLKMatrix4Rotate(modelViewMatrix, _rotation, 1.0f, 1.0f, 1.0f);
-  // combina las transformacion "intrinseca" con la transformacion del "mundo"
-  modelViewMatrix = GLKMatrix4Multiply(baseModelViewMatrix, modelViewMatrix);
-  
-  // asignamos las normales
-  _normalMatrix = GLKMatrix3InvertAndTranspose(GLKMatrix4GetMatrix3(modelViewMatrix), NULL);
-  
-  // asignamos la matriz de la camara
-  _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
-  
+
   // incrementamos el angulo de rotacion 
   // (de manera proporcional al tiempo de actualizacion para mantener la velocidad constante en todos los disposivos)
   _rotation += self.timeSinceLastUpdate * 0.5f;
@@ -300,171 +269,6 @@ GLfloat gCubeVertexData[216] =
   
   //DIBUJAMOS!!!! un cubo
   glDrawArrays(GL_TRIANGLES, 0, 36);
-  
-  // activamos el otro programa (el que hemos cargado de archivos)
-  glUseProgram(_program);
-  
-  // pasamos los parametros "uniform" al shader
-  glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
-  glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
-  
-  //DIBUJAMOS!!!! el otro cubo
-  glDrawArrays(GL_TRIANGLES, 0, 36);
-}
-
-#pragma mark -  OpenGL ES 2 shader compilation
-
-//carga los shaders desde dos archivos
-- (BOOL)loadShaders
-{
-  //"handles" para el vertex shader y el fragment shader
-  GLuint vertShader, fragShader;
-  //path de los archivos que contienen los shaders
-  NSString *vertShaderPathname, *fragShaderPathname;
-  
-  // Crea el programa
-  _program = glCreateProgram();
-  
-  // lee, crea y compila el vertex shader, devuelve el handle por parametro
-  vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
-  if (![self compileShader:&vertShader type:GL_VERTEX_SHADER file:vertShaderPathname]) {
-    NSLog(@"Failed to compile vertex shader");
-    return NO;
-  }
-  
-  // lee, crea y compila el fragment shader, devuelve el handle por parametro
-  fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
-  if (![self compileShader:&fragShader type:GL_FRAGMENT_SHADER file:fragShaderPathname]) {
-    NSLog(@"Failed to compile fragment shader");
-    return NO;
-  }
-  
-  // Vincula el vertex shader con el programa
-  glAttachShader(_program, vertShader);
-  
-  // Vincula el fragment shader con el programa
-  glAttachShader(_program, fragShader);
-  
-  // Asigna las posiciones en las que seran pasados los parametros (atributos) al programa
-  // Esto debe hacerse antes de enlazar (link) el programa
-  glBindAttribLocation(_program, ATTRIB_VERTEX, "position");
-  glBindAttribLocation(_program, ATTRIB_NORMAL, "normal");
-  
-  // Enlaza rl programa (link)
-  if (![self linkProgram:_program]) {
-    NSLog(@"Failed to link program: %d", _program);
-    
-    if (vertShader) {
-      glDeleteShader(vertShader);
-      vertShader = 0;
-    }
-    if (fragShader) {
-      glDeleteShader(fragShader);
-      fragShader = 0;
-    }
-    if (_program) {
-      glDeleteProgram(_program);
-      _program = 0;
-    }
-    
-    return NO;
-  }
-  
-  // Obtiene las direcciones de los parametros "uniform"
-  uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX] = glGetUniformLocation(_program, "modelViewProjectionMatrix");
-  uniforms[UNIFORM_NORMAL_MATRIX] = glGetUniformLocation(_program, "normalMatrix");
-  
-  // Descarta los shaders (ya no hacen falta porque estan enlazados en el programa)
-  if (vertShader) {
-    glDetachShader(_program, vertShader);
-    glDeleteShader(vertShader);
-  }
-  if (fragShader) {
-    glDetachShader(_program, fragShader);
-    glDeleteShader(fragShader);
-  }
-  
-  return YES;
-}
-
-- (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file
-{
-  GLint status;
-  const GLchar *source;
-  
-  source = (GLchar *)[[NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil] UTF8String];
-  if (!source) {
-    NSLog(@"Failed to load vertex shader");
-    return NO;
-  }
-  
-  *shader = glCreateShader(type);
-  glShaderSource(*shader, 1, &source, NULL);
-  glCompileShader(*shader);
-  
-#if defined(DEBUG)
-  GLint logLength;
-  glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
-  if (logLength > 0) {
-    GLchar *log = (GLchar *)malloc(logLength);
-    glGetShaderInfoLog(*shader, logLength, &logLength, log);
-    NSLog(@"Shader compile log:\n%s", log);
-    free(log);
-  }
-#endif
-  
-  glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
-  if (status == 0) {
-    glDeleteShader(*shader);
-    return NO;
-  }
-  
-  return YES;
-}
-
-- (BOOL)linkProgram:(GLuint)prog
-{
-  GLint status;
-  glLinkProgram(prog);
-  
-#if defined(DEBUG)
-  GLint logLength;
-  glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
-  if (logLength > 0) {
-    GLchar *log = (GLchar *)malloc(logLength);
-    glGetProgramInfoLog(prog, logLength, &logLength, log);
-    NSLog(@"Program link log:\n%s", log);
-    free(log);
-  }
-#endif
-  
-  glGetProgramiv(prog, GL_LINK_STATUS, &status);
-  if (status == 0) {
-    return NO;
-  }
-  
-  return YES;
-}
-
-- (BOOL)validateProgram:(GLuint)prog
-{
-  GLint logLength, status;
-  
-  glValidateProgram(prog);
-  glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
-  if (logLength > 0) {
-    GLchar *log = (GLchar *)malloc(logLength);
-    glGetProgramInfoLog(prog, logLength, &logLength, log);
-    NSLog(@"Program validate log:\n%s", log);
-    free(log);
-  }
-  
-  glGetProgramiv(prog, GL_VALIDATE_STATUS, &status);
-  if (status == 0) {
-    return NO;
-  }
-  
-  return YES;
 }
 
 @end
