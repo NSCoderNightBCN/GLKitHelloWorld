@@ -17,11 +17,13 @@
 {
   // este parametro variara con cada ciclo
   float _rotation;
-  
   // identificador del VAO
   GLuint _vertexArray;
   // identificador del VBO
   GLuint _vertexBuffer;
+  
+  // índice de la imagen a cargar
+  NSUInteger _textIndex;
 }
 
 // contexto EAGL

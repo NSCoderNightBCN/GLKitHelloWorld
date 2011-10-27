@@ -110,6 +110,7 @@ GLfloat gCubeVertexData[288] =
   
   self.gcdEnabled = NO;
   self.preferredFramesPerSecond = 60;
+  _textIndex = 1;
   
   // creamos el contexto EAGL
   self.context = [[[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2] autorelease];
@@ -270,8 +271,6 @@ GLfloat gCubeVertexData[288] =
 
 - (IBAction)switchTextures
 {
-  NSLog(@"changeTexture:");
-  
   // Si aún se está ejecutando una operación de carga de texturas, abandonamos
   if (self.loadingTexture) {
     return;
@@ -290,7 +289,12 @@ GLfloat gCubeVertexData[288] =
       [EAGLContext setCurrentContext:self.context];
     
     NSError *error;
-    self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex3.png" ofType:nil] 
+    NSString *textFileName;
+    
+    // Cargamos una imagen distinta cada cez (de las 5 disponibles)
+    _textIndex = (_textIndex == 5) ? 1 : _textIndex + 1;
+    textFileName = [NSString stringWithFormat:@"tex%lu.png", _textIndex];
+    self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:textFileName ofType:nil] 
                                                        options:NULL 
                                                          error:&error];
     if (!texture) {
@@ -317,7 +321,6 @@ GLfloat gCubeVertexData[288] =
       self.loadingTexture = NO; 
     };
     
-    // Aquí sí lo ejecutamos
     if (self.gcdEnabled)
     {
       dispatch_queue_t mainQueue = dispatch_get_main_queue();
@@ -327,6 +330,7 @@ GLfloat gCubeVertexData[288] =
       assignTextureBlock();
   };
   
+  // Aquí sí lo ejecutamos (con GCD o no dependiendo del flag)
   if (self.gcdEnabled)
   {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);

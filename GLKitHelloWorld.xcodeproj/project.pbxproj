@@ -17,7 +17,7 @@
 		8AD3F1AD1450956D004B4E84 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3F1AC1450956D004B4E84 /* AppDelegate.m */; };
 		8AD3F1B41450956D004B4E84 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3F1B31450956D004B4E84 /* ViewController.m */; };
 		8AD3F1B71450956D004B4E84 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8AD3F1B51450956D004B4E84 /* ViewController.xib */; };
-		8AD9D60A14599C220012C693 /* tex.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AD9D60914599C220012C693 /* tex.png */; };
+		8AD9D60A14599C220012C693 /* tex1.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AD9D60914599C220012C693 /* tex1.png */; };
 		8AD9D60E14599F220012C693 /* tex3.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AD9D60D14599F220012C693 /* tex3.png */; };
 		8AD9D62A1459AD350012C693 /* tex2.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AD9D6291459AD350012C693 /* tex2.png */; };
 		8AD9D62E1459AE790012C693 /* tex4.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AD9D62C1459AE790012C693 /* tex4.png */; };
@@ -40,7 +40,7 @@
 		8AD3F1B21450956D004B4E84 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		8AD3F1B31450956D004B4E84 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		8AD3F1B61450956D004B4E84 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
-		8AD9D60914599C220012C693 /* tex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tex.png; sourceTree = "<group>"; };
+		8AD9D60914599C220012C693 /* tex1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tex1.png; sourceTree = "<group>"; };
 		8AD9D60D14599F220012C693 /* tex3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tex3.png; sourceTree = "<group>"; };
 		8AD9D6291459AD350012C693 /* tex2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tex2.png; sourceTree = "<group>"; };
 		8AD9D62C1459AE790012C693 /* tex4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tex4.png; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 				8AD9D62C1459AE790012C693 /* tex4.png */,
 				8AD9D60D14599F220012C693 /* tex3.png */,
 				8AD9D6291459AD350012C693 /* tex2.png */,
-				8AD9D60914599C220012C693 /* tex.png */,
+				8AD9D60914599C220012C693 /* tex1.png */,
 				8AD3F1A41450956D004B4E84 /* GLKitHelloWorld-Info.plist */,
 				8AD3F1A51450956D004B4E84 /* InfoPlist.strings */,
 				8AD3F1A81450956D004B4E84 /* main.m */,
@@ -175,7 +175,7 @@
 			files = (
 				8AD3F1A71450956D004B4E84 /* InfoPlist.strings in Resources */,
 				8AD3F1B71450956D004B4E84 /* ViewController.xib in Resources */,
-				8AD9D60A14599C220012C693 /* tex.png in Resources */,
+				8AD9D60A14599C220012C693 /* tex1.png in Resources */,
 				8AD9D60E14599F220012C693 /* tex3.png in Resources */,
 				8AD9D62A1459AD350012C693 /* tex2.png in Resources */,
 				8AD9D62E1459AE790012C693 /* tex4.png in Resources */,
