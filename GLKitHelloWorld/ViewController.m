@@ -27,55 +27,56 @@ enum
   NUM_ATTRIBUTES
 };
 
-GLfloat gCubeVertexData[216] = 
+GLfloat gCubeVertexData[288] = 
 {
   // La disposicion de los datos es:
   // positionX, positionY, positionZ,     normalX, normalY, normalZ,
   // son 6 caras y cada cara esta formada por dos triangulos (tres vertices por cada triangulo * 2 triangulos por cara = 6 vertices por cara)
-  0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,
-  0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,          1.0f, 0.0f, 0.0f,
-  0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,
+  0.5f, -0.5f, -0.5f,        1.0f, 0.0f, 0.0f,      0.0f, 1.0f,
+  0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
+  0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
+  0.5f, -0.5f, 0.5f,         1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
+  0.5f, 0.5f, 0.5f,          1.0f, 0.0f, 0.0f,      1.0f, 0.0f,
+  0.5f, 0.5f, -0.5f,         1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
   
-  0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,
+  0.5f, 0.5f, -0.5f,         0.0f, 1.0f, 0.0f,      0.0f, 1.0f,
+  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,      1.0f, 1.0f,
+  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,      0.0f, 0.0f,
+  0.5f, 0.5f, 0.5f,          0.0f, 1.0f, 0.0f,      0.0f, 0.0f,
+  -0.5f, 0.5f, -0.5f,        0.0f, 1.0f, 0.0f,      1.0f, 0.0f,
+  -0.5f, 0.5f, 0.5f,         0.0f, 1.0f, 0.0f,      1.0f, 1.0f,
   
-  -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,
-  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,
+  -0.5f, 0.5f, -0.5f,        -1.0f, 0.0f, 0.0f,      0.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
+  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
+  -0.5f, 0.5f, 0.5f,         -1.0f, 0.0f, 0.0f,      0.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,       -1.0f, 0.0f, 0.0f,      1.0f, 0.0f,
+  -0.5f, -0.5f, 0.5f,        -1.0f, 0.0f, 0.0f,      1.0f, 1.0f,
   
-  -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,
-  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,
-  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,       0.0f, -1.0f, 0.0f,      0.0f, 1.0f,
+  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,      1.0f, 1.0f,
+  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,      0.0f, 0.0f,
+  -0.5f, -0.5f, 0.5f,        0.0f, -1.0f, 0.0f,      0.0f, 0.0f,
+  0.5f, -0.5f, -0.5f,        0.0f, -1.0f, 0.0f,      1.0f, 0.0f,
+  0.5f, -0.5f, 0.5f,         0.0f, -1.0f, 0.0f,      1.0f, 1.0f,
   
-  0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,
-  -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,
+  0.5f, 0.5f, 0.5f,          0.0f, 0.0f, 1.0f,      0.0f, 1.0f,
+  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      1.0f, 1.0f,
+  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      0.0f, 0.0f,
+  0.5f, -0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      0.0f, 0.0f,
+  -0.5f, 0.5f, 0.5f,         0.0f, 0.0f, 1.0f,      1.0f, 0.0f,
+  -0.5f, -0.5f, 0.5f,        0.0f, 0.0f, 1.0f,      1.0f, 1.0f,
   
-  0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,
-  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,
-  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,
-  -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
+  0.5f, -0.5f, -0.5f,        0.0f, 0.0f, -1.0f,      0.0f, 1.0f,
+  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,      1.0f, 1.0f,
+  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,      0.0f, 0.0f,
+  0.5f, 0.5f, -0.5f,         0.0f, 0.0f, -1.0f,      0.0f, 0.0f,
+  -0.5f, -0.5f, -0.5f,       0.0f, 0.0f, -1.0f,      1.0f, 0.0f,
+  -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f,      1.0f, 1.0f
 };
 
 @implementation ViewController
+@synthesize frameRateLabel = _frameRateLabel;
 
 @synthesize context = _context;
 @synthesize effect = _effect;
@@ -84,6 +85,7 @@ GLfloat gCubeVertexData[216] =
 {
   [_context release];
   [_effect release];
+  [_frameRateLabel release];
   [super dealloc];
 }
 
@@ -109,7 +111,8 @@ GLfloat gCubeVertexData[216] =
 }
 
 - (void)viewDidUnload
-{
+{    
+  [self setFrameRateLabel:nil];
   [super viewDidUnload];
   
   [self tearDownGL];
@@ -140,7 +143,7 @@ GLfloat gCubeVertexData[216] =
   self.effect = [[[GLKBaseEffect alloc] init] autorelease];
   //activamos una luz en el efecto (roja)
   self.effect.light0.enabled = GL_TRUE;
-  self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
+//  self.effect.light0.diffuseColor = GLKVector4Make(1.0f, 0.4f, 0.4f, 1.0f);
   
   //activamos el estado para manejar profundidad
   glEnable(GL_DEPTH_TEST);
@@ -190,16 +193,29 @@ GLfloat gCubeVertexData[216] =
   glBindVertexArrayOES(_vertexArray);
 
   glEnableVertexAttribArray(GLKVertexAttribPosition);
-  glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
+  glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(0));
   glEnableVertexAttribArray(GLKVertexAttribNormal);
-  glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(12));
-  
+  glVertexAttribPointer(GLKVertexAttribNormal, 3, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(12));
+
+  glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
+  glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 32, BUFFER_OFFSET(24));
+
   // desenlazamos el VAO
   glBindVertexArrayOES(0);
 
   // desenlazamos el VBO -> esto no viene en el template, pero es buena costumbre
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+  
+  NSError *error;
+  GLKTextureInfo *texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex.png" ofType:nil] 
+                                                                options:NULL 
+                                                                  error:&error];
+  if (!texture) {
+    NSLog(@"error loading texture: %@", [error description]);
+  }
+  
+  self.effect.texture2d0.name = texture.name;
 }
 
 - (void)tearDownGL
@@ -249,6 +265,8 @@ GLfloat gCubeVertexData[216] =
   // incrementamos el angulo de rotacion 
   // (de manera proporcional al tiempo de actualizacion para mantener la velocidad constante en todos los disposivos)
   _rotation += self.timeSinceLastUpdate * 0.5f;
+  
+  self.frameRateLabel.text = [NSString stringWithFormat:@"Frame Rate: %d", self.framesPerSecond];
 }
 
 

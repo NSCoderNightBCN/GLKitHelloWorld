@@ -44,4 +44,6 @@
 // borra el "effect"
 - (void)tearDownGL;
 
+
+@property (retain, nonatomic) IBOutlet UILabel *frameRateLabel;
 @end
