@@ -251,7 +251,7 @@ GLfloat gCubeVertexData[288] =
   }
   self.loadingTexture = YES; 
   
-#define USE_GCD 1
+#define USE_GCD 0
   
 #if USE_GCD  
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
