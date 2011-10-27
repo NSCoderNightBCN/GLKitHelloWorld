@@ -277,8 +277,8 @@ GLfloat gCubeVertexData[288] =
     return;
   }
   self.loadingTexture = YES;
-  
-  
+
+
   void (^loadTextureBlock)(void);
   
   // ATENCIÓN! Aquí sólo definimos el bloque, no lo ejecutamos!
