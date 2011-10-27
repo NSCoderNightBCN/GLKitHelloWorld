@@ -18,6 +18,7 @@
 		8AD3F1B41450956D004B4E84 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8AD3F1B31450956D004B4E84 /* ViewController.m */; };
 		8AD3F1B71450956D004B4E84 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8AD3F1B51450956D004B4E84 /* ViewController.xib */; };
 		8AD9D60A14599C220012C693 /* tex.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AD9D60914599C220012C693 /* tex.png */; };
+		8AD9D60E14599F220012C693 /* tex3.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AD9D60D14599F220012C693 /* tex3.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		8AD3F1B31450956D004B4E84 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		8AD3F1B61450956D004B4E84 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
 		8AD9D60914599C220012C693 /* tex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tex.png; sourceTree = "<group>"; };
+		8AD9D60D14599F220012C693 /* tex3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tex3.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 		8AD3F1A31450956D004B4E84 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8AD9D60D14599F220012C693 /* tex3.png */,
 				8AD9D60914599C220012C693 /* tex.png */,
 				8AD3F1A41450956D004B4E84 /* GLKitHelloWorld-Info.plist */,
 				8AD3F1A51450956D004B4E84 /* InfoPlist.strings */,
@@ -164,6 +167,7 @@
 				8AD3F1A71450956D004B4E84 /* InfoPlist.strings in Resources */,
 				8AD3F1B71450956D004B4E84 /* ViewController.xib in Resources */,
 				8AD9D60A14599C220012C693 /* tex.png in Resources */,
+				8AD9D60E14599F220012C693 /* tex3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

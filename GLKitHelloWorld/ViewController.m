@@ -75,14 +75,22 @@ GLfloat gCubeVertexData[288] =
   -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f,      1.0f, 1.0f
 };
 
+@interface ViewController ()
+@property (nonatomic, retain) GLKTextureInfo *texture;
+@property (atomic, assign) BOOL loadingTexture;
+@end
+
 @implementation ViewController
 @synthesize frameRateLabel = _frameRateLabel;
 
 @synthesize context = _context;
 @synthesize effect = _effect;
+@synthesize texture;
+@synthesize loadingTexture;
 
 - (void)dealloc
 {
+  [texture release];
   [_context release];
   [_effect release];
   [_frameRateLabel release];
@@ -92,6 +100,8 @@ GLfloat gCubeVertexData[288] =
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  self.preferredFramesPerSecond = 60;
   
   // creamos el contexto EAGL
   self.context = [[[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2] autorelease];
@@ -108,6 +118,8 @@ GLfloat gCubeVertexData[288] =
   view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
   
   [self setupGL];
+  
+  [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(changeTexture:) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidUnload
@@ -208,14 +220,14 @@ GLfloat gCubeVertexData[288] =
 
   
   NSError *error;
-  GLKTextureInfo *texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex.png" ofType:nil] 
-                                                                options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:GLKTextureLoaderOriginBottomLeft] 
-                                                                  error:&error];
+  self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex.png" ofType:nil] 
+                                                     options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:GLKTextureLoaderOriginBottomLeft]  
+                                                       error:&error];
   if (!texture) {
     NSLog(@"error loading texture: %@", [error description]);
   }
   
-  self.effect.texture2d0.name = texture.name;
+  self.effect.texture2d0.name = self.texture.name;
 }
 
 - (void)tearDownGL
@@ -229,6 +241,48 @@ GLfloat gCubeVertexData[288] =
   
   //borramos el efecto
   self.effect = nil;
+}
+
+- (IBAction)changeTexture:(id)sender {
+  NSLog(@"change");
+  
+  if (self.loadingTexture) {
+    return;
+  }
+  self.loadingTexture = YES; 
+  
+#define USE_GCD 1
+  
+#if USE_GCD  
+  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+  dispatch_async(queue, ^{
+    [EAGLContext setCurrentContext:self.context];
+#endif
+    
+    NSError *error;
+    self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex3.png" ofType:nil] 
+                                                       options:NULL 
+                                                         error:&error];
+    if (!texture) {
+      NSLog(@"error loading texture: %@", [error description]);
+    }
+    
+    dispatch_queue_t mainQueue = dispatch_get_main_queue();
+    
+    dispatch_async(mainQueue, ^{
+      [EAGLContext setCurrentContext:self.context];
+      GLuint tex = self.effect.texture2d0.name;
+      glDeleteTextures(1, &tex);
+      
+      self.effect.texture2d0.name = self.texture.name;
+      self.loadingTexture = NO; 
+    });
+    
+#if USE_GCD  
+ });
+#endif
+  
+ 
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods
@@ -266,7 +320,6 @@ GLfloat gCubeVertexData[288] =
   // (de manera proporcional al tiempo de actualizacion para mantener la velocidad constante en todos los disposivos)
   _rotation += self.timeSinceLastUpdate * 0.5f;
   
-  self.frameRateLabel.text = [NSString stringWithFormat:@"Frame Rate: %d", self.framesPerSecond];
 }
 
 
@@ -287,6 +340,9 @@ GLfloat gCubeVertexData[288] =
   
   //DIBUJAMOS!!!! un cubo
   glDrawArrays(GL_TRIANGLES, 0, 36);
+  
+  self.frameRateLabel.text = [NSString stringWithFormat:@"Frame Rate: %f", (float)(self.timeSinceLastDraw)];
+
 }
 
 @end
