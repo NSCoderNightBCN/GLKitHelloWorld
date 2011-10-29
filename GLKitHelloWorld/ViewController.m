@@ -283,10 +283,9 @@ GLfloat gCubeVertexData[288] =
   // ATENCIÓN! Aquí sólo definimos el bloque, no lo ejecutamos!
   loadTextureBlock = ^{
     
-    // Si ejecutamos este bloque con GCD, necesitamos activar el contexto de 
-    // OpenGL.
-    if (self.gcdEnabled)
-      [EAGLContext setCurrentContext:self.context];
+    // La documentación de GLKTextureLoader nos exige que, antes de cargar una
+    // textura de manera síncrona, activemos el contexto OpenGL a usar.
+    [EAGLContext setCurrentContext:self.context];
     
     NSError *error;
     NSString *textFileName;
@@ -306,9 +305,8 @@ GLfloat gCubeVertexData[288] =
     // Recordamos que aquí sólo definimos el boque, se ejecuta más abajo
     assignTextureBlock = ^{
 
-      // Otra vez, si ejecutamos esto desde GCD tenemos que activar el contexto
-      if (self.gcdEnabled)
-        [EAGLContext setCurrentContext:self.context];
+      // Como buenos samaritanos, tenemos que volver a activar el contexto
+      [EAGLContext setCurrentContext:self.context];
       
       // Eliminamos la textura actual
       GLuint tex = self.effect.texture2d0.name;
