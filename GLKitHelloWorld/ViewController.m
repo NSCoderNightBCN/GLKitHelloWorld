@@ -266,7 +266,6 @@ GLfloat gCubeVertexData[288] =
   // Actualizamos el título del botón
   buttonTitle = (self.gcdEnabled) ? @"Desactivar GCD" : @"Activar GCD";
   [self.enableGCDButton setTitle:buttonTitle forState:UIControlStateNormal];
-  [self.enableGCDButton sizeToFit];
 }
 
 - (void)switchTextures
