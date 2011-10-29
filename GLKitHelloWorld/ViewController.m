@@ -109,7 +109,7 @@ GLfloat gCubeVertexData[288] =
   [super viewDidLoad];
   
   self.gcdEnabled = NO;
-  self.preferredFramesPerSecond = 60;
+  self.preferredFramesPerSecond = _fps = 60;
   _textIndex = 1;
   
   // creamos el contexto EAGL
@@ -269,7 +269,7 @@ GLfloat gCubeVertexData[288] =
   [self.enableGCDButton sizeToFit];
 }
 
-- (IBAction)switchTextures
+- (void)switchTextures
 {
   // Si aún se está ejecutando una operación de carga de texturas, abandonamos
   if (self.loadingTexture) {
@@ -394,8 +394,16 @@ GLfloat gCubeVertexData[288] =
   //DIBUJAMOS!!!! un cubo
   glDrawArrays(GL_TRIANGLES, 0, 36);
   
-  self.frameRateLabel.text = [NSString stringWithFormat:@"Frame Rate: %f", (float)(self.timeSinceLastDraw)];
-
+  // Desgraciadamente no podemos fiarnos de la propiedad @framesPerSecond de
+  // GLKViewController porqué parece no cambiar nunca. Por lo tanto vamos a 
+  // calcularlo por nuestra cuenta.
+  _acc += self.timeSinceLastDraw;
+  if (self.framesDisplayed > 1 && (self.framesDisplayed % 30) == 0)
+  {
+    _fps = (_fps + 30.0/_acc)/2.0;
+    _acc = 0.0;
+    self.frameRateLabel.text = [NSString stringWithFormat:@"Frame Rate: %.1f", _fps];
+  }
 }
 
 @end

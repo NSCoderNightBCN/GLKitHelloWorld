@@ -24,6 +24,9 @@
   
   // índice de la imagen a cargar
   NSUInteger _textIndex;
+  // media de fps
+  double _fps;
+  double _acc;
 }
 
 // contexto EAGL
