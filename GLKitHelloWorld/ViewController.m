@@ -123,12 +123,14 @@ GLfloat gCubeVertexData[288] =
   GLKView *view = (GLKView *)self.view;
   view.context = self.context;
   
-  //vamos a usar el "depth buffer" para manejar prfundidad
+  //vamos a usar el "depth buffer" para manejar profundidad
   view.drawableDepthFormat = GLKViewDrawableDepthFormat24;
   
   [self setupGL];
   
-  [NSTimer scheduledTimerWithTimeInterval:3 target:self 
+  // Vamos a cambiar de texturas cada pocos segundos
+  [NSTimer scheduledTimerWithTimeInterval:3 
+                                   target:self 
                                  selector:@selector(switchTextures) 
                                  userInfo:nil 
                                   repeats:YES];
@@ -231,7 +233,7 @@ GLfloat gCubeVertexData[288] =
   // desenlazamos el VBO -> esto no viene en el template, pero es buena costumbre
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  
+  // Por defecto cargamos una textura predeterminada, más tarde la actualizaremos
   NSError *error;
   self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"tex.png" ofType:nil] 
                                                      options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:GLKTextureLoaderOriginBottomLeft]  
@@ -254,87 +256,6 @@ GLfloat gCubeVertexData[288] =
   
   //borramos el efecto
   self.effect = nil;
-}
-
-- (IBAction)enableGCD:(id)sender
-{
-  NSString *buttonTitle;
-  
-  // Cambiamos el flag que activa/desactiva las funciones de GCD
-  self.gcdEnabled = !self.gcdEnabled;
-  
-  // Actualizamos el título del botón
-  buttonTitle = (self.gcdEnabled) ? @"Desactivar GCD" : @"Activar GCD";
-  [self.enableGCDButton setTitle:buttonTitle forState:UIControlStateNormal];
-}
-
-- (void)switchTextures
-{
-  // Si aún se está ejecutando una operación de carga de texturas, abandonamos
-  if (self.loadingTexture) {
-    return;
-  }
-  self.loadingTexture = YES;
-
-
-  void (^loadTextureBlock)(void);
-  
-  // ATENCIÓN! Aquí sólo definimos el bloque, no lo ejecutamos!
-  loadTextureBlock = ^{
-    
-    // La documentación de GLKTextureLoader nos exige que, antes de cargar una
-    // textura de manera síncrona, activemos el contexto OpenGL a usar.
-    [EAGLContext setCurrentContext:self.context];
-    
-    NSError *error;
-    NSString *textFileName;
-    
-    // Cargamos una imagen distinta cada cez (de las 5 disponibles)
-    _textIndex = (_textIndex == 5) ? 1 : _textIndex + 1;
-    textFileName = [NSString stringWithFormat:@"tex%lu.png", _textIndex];
-    self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:textFileName ofType:nil] 
-                                                       options:NULL 
-                                                         error:&error];
-    if (!texture) {
-      NSLog(@"error loading texture: %@", [error description]);
-    }
-    
-    void (^assignTextureBlock)(void);
-    
-    // Recordamos que aquí sólo definimos el boque, se ejecuta más abajo
-    assignTextureBlock = ^{
-
-      // Como buenos samaritanos, tenemos que volver a activar el contexto
-      [EAGLContext setCurrentContext:self.context];
-      
-      // Eliminamos la textura actual
-      GLuint tex = self.effect.texture2d0.name;
-      glDeleteTextures(1, &tex);
-      
-      // Assignamos la nueva textura
-      self.effect.texture2d0.name = self.texture.name;
-      
-      // Hemos terminado de cargar la textura, volvemos a permitir más cambios
-      self.loadingTexture = NO; 
-    };
-    
-    if (self.gcdEnabled)
-    {
-      dispatch_queue_t mainQueue = dispatch_get_main_queue();
-      dispatch_async(mainQueue, assignTextureBlock);
-    }
-    else
-      assignTextureBlock();
-  };
-  
-  // Aquí sí lo ejecutamos (con GCD o no dependiendo del flag)
-  if (self.gcdEnabled)
-  {
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(queue, loadTextureBlock);
-  }
-  else
-    loadTextureBlock();
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods
@@ -403,6 +324,89 @@ GLfloat gCubeVertexData[288] =
     _acc = 0.0;
     self.frameRateLabel.text = [NSString stringWithFormat:@"Frame Rate: %.1f", _fps];
   }
+}
+
+#pragma mark - GCD
+
+- (IBAction)enableGCD:(id)sender
+{
+  NSString *buttonTitle;
+  
+  // Cambiamos el flag que activa/desactiva las funciones de GCD
+  self.gcdEnabled = !self.gcdEnabled;
+  
+  // Actualizamos el título del botón
+  buttonTitle = (self.gcdEnabled) ? @"Desactivar GCD" : @"Activar GCD";
+  [self.enableGCDButton setTitle:buttonTitle forState:UIControlStateNormal];
+}
+
+- (void)switchTextures
+{
+  // Si aún se está ejecutando una operación de carga de texturas, abandonamos
+  if (self.loadingTexture) {
+    return;
+  }
+  self.loadingTexture = YES;
+  
+  
+  void (^loadTextureBlock)(void);
+  
+  // ATENCIÓN! Aquí sólo definimos el bloque, no lo ejecutamos!
+  loadTextureBlock = ^{
+    
+    // La documentación de GLKTextureLoader nos exige que, antes de cargar una
+    // textura de manera síncrona, activemos el contexto OpenGL a usar.
+    [EAGLContext setCurrentContext:self.context];
+    
+    NSError *error;
+    NSString *textFileName;
+    
+    // Cargamos una imagen distinta cada cez (de las 5 disponibles)
+    _textIndex = (_textIndex == 5) ? 1 : _textIndex + 1;
+    textFileName = [NSString stringWithFormat:@"tex%lu.png", _textIndex];
+    self.texture = [GLKTextureLoader textureWithContentsOfFile:[[NSBundle mainBundle] pathForResource:textFileName ofType:nil] 
+                                                       options:NULL 
+                                                         error:&error];
+    if (!texture) {
+      NSLog(@"error loading texture: %@", [error description]);
+    }
+    
+    void (^assignTextureBlock)(void);
+    
+    // Recordamos que aquí sólo definimos el boque, se ejecuta más abajo
+    assignTextureBlock = ^{
+      
+      // Como buenos samaritanos, tenemos que volver a activar el contexto
+      [EAGLContext setCurrentContext:self.context];
+      
+      // Eliminamos la textura actual
+      GLuint tex = self.effect.texture2d0.name;
+      glDeleteTextures(1, &tex);
+      
+      // Assignamos la nueva textura
+      self.effect.texture2d0.name = self.texture.name;
+      
+      // Hemos terminado de cargar la textura, volvemos a permitir más cambios
+      self.loadingTexture = NO; 
+    };
+    
+    if (self.gcdEnabled)
+    {
+      dispatch_queue_t mainQueue = dispatch_get_main_queue();
+      dispatch_async(mainQueue, assignTextureBlock);
+    }
+    else
+      assignTextureBlock();
+  };
+  
+  // Aquí sí lo ejecutamos (con GCD o no dependiendo del flag)
+  if (self.gcdEnabled)
+  {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, loadTextureBlock);
+  }
+  else
+    loadTextureBlock();
 }
 
 @end
